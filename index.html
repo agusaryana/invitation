@@ -59,10 +59,23 @@
           z-index:2;
         }
 
+        /* MOBILE FINAL FIX */
         @media(max-width:768px){
           .hero{
-            background-size:auto 115%;   /* tinggi penuh, lebar mengikuti */
-            background-position:center bottom; /* fokus ke bawah (orangnya) */
+            background-size:auto 120%;      /* portrait friendly */
+            background-position:50% 85%;    /* fokus ke bawah (orangnya) */
+          }
+        }
+
+        @media(max-width:768px){
+          .hero{
+            justify-content:flex-start;
+            padding-top:140px;
+            padding-bottom:120px;
+          }
+        
+          .hero h1{
+            font-size:38px;
           }
         }
 
@@ -1107,6 +1120,7 @@
 
 </body>
 </html>
+
 
 
 
