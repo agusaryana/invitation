@@ -778,6 +778,28 @@
             background:rgba(0,0,0,.25);
           }
         }
+        .credit{
+          margin-top:28px;
+          font-size:11px;
+          letter-spacing:2px;
+          opacity:.55;
+          color:#caa93f;
+        }
+        
+        .credit span{
+          background:linear-gradient(45deg,#e6c76a,#caa93f);
+          -webkit-background-clip:text;
+          -webkit-text-fill-color:transparent;
+          font-weight:600;
+        }
+        
+        /* hover halus (orang iseng bakal notice 😏) */
+        .credit:hover{
+          opacity:.9;
+          transform:translateY(-1px);
+          transition:.3s;
+        }
+
 </style>
 </head>
 
@@ -980,6 +1002,10 @@
 <footer class="footer">
   <div class="mantra-bali">ᬑᬁ ᬰᬁᬢᬶ ᬰᬁᬢᬶ ᬰᬁᬢᬶ ᬑᬁ</div>
   <div class="mantra-latin">Om Shanti Shanti Shanti Om</div>
+
+  <div class="credit">
+    Made with ❤️ by <span>Agus Aryana</span>
+  </div>
 </footer>
 
 <button id="toggleMusic" class="music-btn">🔊</button>
@@ -1177,6 +1203,7 @@
 
 </body>
 </html>
+
 
 
 
