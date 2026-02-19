@@ -534,16 +534,106 @@
         opacity:.6;
         }
 
+        .reveal{
+          opacity:0;
+          transform:translateY(40px);
+          transition:all 1.2s cubic-bezier(.17,.67,.3,1.33);
+        }
+
+        .reveal.active{
+          opacity:1;
+          transform:translateY(0);
+        }
+
+        @keyframes fall{
+          to{
+            transform:translateY(110vh) rotate(360deg);
+          }
+        }
+
+        .lock{
+          position:fixed;
+          inset:0;
+          background:#111;
+          display:flex;
+          flex-direction:column;
+          justify-content:center;
+          align-items:center;
+          z-index:9999;
+          transition:1.2s;
+        }
+
+        .lock.hide{
+          opacity:0;
+          visibility:hidden;
+        }
+
+        body{
+          overflow:hidden;
+        }
+
+        .countdown div{
+          font-variant-numeric:tabular-nums;
+        }
+        /* GOLD CURSOR LIGHT */
+        .gold-light{
+          position:fixed;
+          width:420px;
+          height:420px;
+          pointer-events:none;
+          border-radius:50%;
+          background:radial-gradient(circle,
+              rgba(255,215,120,.35) 0%,
+              rgba(212,175,55,.18) 25%,
+              rgba(212,175,55,.10) 40%,
+              rgba(0,0,0,0) 70%);
+          mix-blend-mode:screen;
+          z-index:0;
+          transform:translate(-50%,-50%);
+          transition:opacity .4s;
+          opacity:.55;
+        }
+
+        /* HP biar ga terlalu terang */
+        @media(max-width:768px){
+          .gold-light{
+            width:260px;
+            height:260px;
+            opacity:.45;
+          }
+        }
+        .music-btn{
+          position:fixed;
+          bottom:25px;
+          right:25px;
+          width:50px;
+          height:50px;
+          border-radius:50%;
+          border:none;
+          background:linear-gradient(145deg,#d4af37,#f6e27a);
+          color:#000;
+          font-size:20px;
+          cursor:pointer;
+          box-shadow:0 8px 20px rgba(0,0,0,.3);
+          z-index:9999;
+          transition:.3s;
+        }
+        .music-btn:hover{
+          transform:scale(1.1);
+        }
+
 </style>
 </head>
 
 <body>
+    <div class="gold-light" id="goldLight"></div>
     <div class="ornamen-top"></div>
     <div class="ornamen-bottom"></div>
 
-        <audio id="music" loop>
-        <source src="music.mp3" type="audio/mpeg">
+        <audio id="bgMusic" loop preload="auto" playsinline>
+          <source src="audio1.mp3" type="audio/mpeg">
         </audio>
+
 
 <!-- LOCK SCREEN -->
 <div class="lock" id="lock">
@@ -553,9 +643,11 @@
 
 <!-- HERO -->
 <section class="hero">
+    <div class="section reveal">
     <p class="bali">ᬑᬁ ᬲ᭄ᬯᬲ᭄ᬢ᭄ᬬᬲ᭄ᬢᬸ</p>
     <p>Om Swastyastu</p>
     <h1>Upacara Mepandes/Metatah</h1>
+    </div>
     <p id="guestName"></p>
     <a href="#acara" class="btn">Lihat Detail</a>
 </section>
@@ -677,7 +769,7 @@
 </section>
 
 <!-- DANA PUNIA -->
-<section class="section">
+<!-- <section class="section">
   <div class="card">
     <h2 class="gold">Dana Punia</h2>
 
@@ -704,7 +796,19 @@
 
         <div id="toast">Nomor rekening berhasil disalin</div>
   </div>
-</section>
+</section> -->
+
+<!-- <section class="section">
+  <div class="card">
+       <div class="event-wrapper">
+           <div class="event-block">
+            <p class="event-title gold">Merupakan suatu kehormatan dan kebahagiaan bagi kami sekeluarga, apabila Bapak/Ibu?Saudara/I berkenan hadir untuk memberikan doa restu.</p><br>
+            <p class="event-title gold">Atas kehadiran dan doa restunya kami sekeluarga mengucapkan terimakasih</p>
+        </div>
+        <div class="divider"></div>
+       </div>
+  </div>
+</section> -->
 
 <footer class="footer">
   <div class="mantra-bali">ᬑᬁ ᬰᬁᬢᬶ ᬰᬁᬢᬶ ᬰᬁᬢᬶ ᬑᬁ</div>
@@ -713,53 +817,68 @@
 
 
 <script>
-// ambil nama tamu dari URL
-const params=new URLSearchParams(window.location.search);
-const guest=params.get('to');
+  // ambil nama tamu dari URL
+  const params=new URLSearchParams(window.location.search);
+  const guest=params.get('to');
 
-if(guest){
-  document.getElementById('guestName').innerText="Kepada Yth. "+guest;
-  document.getElementById('namaTamu').value=guest;
-}
+  if(guest){
+    document.getElementById('guestName').innerText="Kepada Yth. "+guest;
+    document.getElementById('namaTamu').value=guest;
+  }
 
-// buka amplop + musik
-const lock=document.getElementById('lock');
-const env=document.getElementById('openEnv');
+  // buka amplop + musik
+  const lock=document.getElementById('lock');
+  const env=document.getElementById('openEnv');
 
-env.onclick=()=>{
-  env.classList.add('open');
-  lock.style.display='none';
+  env.onclick = () => {
+    env.classList.add('open');
 
-  const music=document.getElementById('music');
-  music.muted=false;
-  music.play().catch(()=>{});
-}
+    setTimeout(() => {
+      lock.classList.add('hide'); // pakai animasi css
+      document.body.style.overflow = 'auto';
+      startPetals();
 
-// countdown
-const target=new Date('March 23, 2026 13:00:00').getTime();
+      const music = document.getElementById('music');
+      music.volume = 0;
+      music.play().catch(()=>{});
 
-setInterval(()=>{
-  const now=new Date().getTime();
-  const d=target-now;
-  if(d<0)return;
+      // fade in music
+      let v = 0;
+      const fade = setInterval(()=>{
+        v += 0.05;
+        music.volume = v;
+        if(v >= 0.6) clearInterval(fade);
+      },120);
 
-  const day=Math.floor(d/(1000*60*60*24));
-  const hr=Math.floor((d%(1000*60*60*24))/(1000*60*60));
-  const min=Math.floor((d%(1000*60*60))/(1000*60));
-  const sec=Math.floor((d%(1000*60))/1000);
+    }, 900);
+  };
 
-  document.getElementById('countdown').innerHTML=
-  `<div>${day}<br>Hari</div>
-   <div>${hr}<br>Jam</div>
-   <div>${min}<br>Menit</div>
-   <div>${sec}<br>Detik</div>`;
-},1000);
 
-// copy rekening
-function copyRek(){
-  navigator.clipboard.writeText("1234567890");
-  alert("Nomor rekening disalin");
-}
+  // countdown
+  const target=new Date('March 23, 2026 13:00:00').getTime();
+
+  setInterval(()=>{
+    const now=new Date().getTime();
+    const d=target-now;
+    if(d<0)return;
+
+    const day=Math.floor(d/(1000*60*60*24));
+    const hr=Math.floor((d%(1000*60*60*24))/(1000*60*60));
+    const min=Math.floor((d%(1000*60*60))/(1000*60));
+    const sec=Math.floor((d%(1000*60))/1000);
+
+    document.getElementById('countdown').innerHTML=
+    `<div>${day}<br>Hari</div>
+    <div>${hr}<br>Jam</div>
+    <div>${min}<br>Menit</div>
+    <div>${sec}<br>Detik</div>`;
+  },1000);
+
+  // copy rekening
+  function copyRek(){
+    navigator.clipboard.writeText("1234567890");
+    alert("Nomor rekening disalin");
+  }
 </script>
 
 <script>
@@ -793,5 +912,120 @@ function copyRek(){
     });
 </script>
 
+<script>
+  function createFlower(){
+    const flower = document.createElement("div");
+    flower.innerHTML = "🌸";
+    flower.style.position="fixed";
+    flower.style.top="-20px";
+    flower.style.left=Math.random()*100+"vw";
+    flower.style.fontSize=(Math.random()*15+10)+"px";
+    flower.style.opacity=Math.random();
+    flower.style.animation="fall linear forwards";
+    flower.style.animationDuration=(Math.random()*5+5)+"s";
+    document.body.appendChild(flower);
+
+    setTimeout(()=>flower.remove(),10000);
+  }
+  setInterval(createFlower,800);
+</script>
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          entry.target.classList.add('active');
+        }
+      });
+    },{threshold:0.2});
+
+    reveals.forEach(el=>observer.observe(el));
+      </script>
+      <script>
+        function startPetals(){
+      setInterval(createPetal, 450);
+    }
+
+    function createPetal(){
+      const petal = document.createElement("div");
+      petal.innerHTML = "❀";
+
+      petal.style.position="fixed";
+      petal.style.top="-20px";
+      petal.style.left=Math.random()*100+"vw";
+      petal.style.fontSize=(12+Math.random()*18)+"px";
+      petal.style.color="rgba(255,215,140,.8)";
+      petal.style.animation="fall "+(6+Math.random()*6)+"s linear forwards";
+      petal.style.pointerEvents="none";
+      petal.style.zIndex="3";
+
+      document.body.appendChild(petal);
+
+      setTimeout(()=>petal.remove(),12000);
+    }
+</script>
+<script>
+  const light=document.getElementById("goldLight");
+
+  function moveLight(x,y){
+    light.style.left=x+"px";
+    light.style.top=y+"px";
+  }
+
+  // mouse (desktop)
+  document.addEventListener("mousemove",e=>{
+    moveLight(e.clientX,e.clientY);
+  });
+
+  // touch (HP)
+  document.addEventListener("touchmove",e=>{
+    const t=e.touches[0];
+    moveLight(t.clientX,t.clientY);
+  },{passive:true});
+</script>
+
+<script>
+const music = document.getElementById("bgMusic");
+const openEnv = document.getElementById("openEnv");
+
+openEnv.addEventListener("click", () => {
+    document.getElementById("lock").style.display = "none";
+
+    music.volume = 0; // mulai dari 0 (silent)
+
+    music.play().then(() => {
+
+        // naik pelan pelan
+        let vol = 0;
+        const fade = setInterval(() => {
+            vol += 0.03; // kecepatan naik (ubah disini)
+            if (vol >= 0.5) { // max volume (0.0 - 1.0)
+                vol = 0.5;
+                clearInterval(fade);
+            }
+            music.volume = vol;
+        }, 120);
+
+    }).catch(() => {
+        console.log("Autoplay dicegah browser");
+    });
+});
+</script>
+<script>
+  const btnMusic = document.getElementById("toggleMusic");
+
+  btnMusic.addEventListener("click", () => {
+      if (music.muted) {
+          music.muted = false;
+          btnMusic.innerHTML = "🔊";
+      } else {
+          music.muted = true;
+          btnMusic.innerHTML = "🔇";
+      }
+  });
+</script>
+
+<button id="toggleMusic" class="music-btn">🔊</button>
 </body>
 </html>
