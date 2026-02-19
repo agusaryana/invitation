@@ -34,17 +34,29 @@
 
         /* HERO LUXURY */
         .hero{
-        height:100vh;
-        background:
-        radial-gradient(circle at 50% 30%, rgba(255,215,120,.08), transparent 60%),
-        linear-gradient(#0a0a0b,#000);
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        flex-direction:column;
-        position:relative;
-        text-align:center;
-        z-index:2;
+          height:100vh;
+
+          background:
+            /* layer gelap biar teks kebaca */
+            linear-gradient(rgba(5,5,5,.65), rgba(5,5,5,.85)),
+
+            /* glow emas tengah */
+            radial-gradient(circle at 50% 35%, rgba(255,215,120,.18), transparent 60%),
+
+            /* gambar utama */
+            url("img/image1.png");
+
+          background-size:cover;
+          background-position:center;
+          background-repeat:no-repeat;
+
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          flex-direction:column;
+          position:relative;
+          text-align:center;
+          z-index:2;
         }
 
         /* ORNAMEN EMAS */
@@ -138,49 +150,33 @@
         letter-spacing:2px
         }
 
-        /* LOCK SCREEN */
+        /* LOCK FINAL CLEAN */
         .lock{
-        position:fixed;
-        inset:0;
-        background:radial-gradient(circle,#111,#000);
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        flex-direction:column;
-        color:white;
-        z-index:9999
+          position:fixed;
+          inset:0;
+          background:
+            radial-gradient(circle at center,#1a1a1d 0%,#050505 70%);
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          flex-direction:column;
+          text-align:center;
+          gap:35px;
+          padding:20px;
+          z-index:9999;
+          transition:opacity 1s ease, visibility 1s ease;
         }
 
-        .envelope{
-        width:170px;
-        height:115px;
-        background:linear-gradient(#fff,#eaeaea);
-        position:relative;
-        cursor:pointer;
-        border-radius:6px;
-        box-shadow:0 10px 30px rgba(0,0,0,.8)
-        }
-
-        .envelope:before{
-        content:"";
-        position:absolute;
-        top:-57px;
-        left:0;
-        width:0;height:0;
-        border-left:85px solid transparent;
-        border-right:85px solid transparent;
-        border-bottom:57px solid #fff;
-        transition:.7s
-        }
-
-        .open:before{
-        transform:rotateX(180deg);
-        transform-origin:bottom
+        .lock.hide{
+          opacity:0;
+          visibility:hidden;
+          pointer-events:none;
         }
 
         @media(max-width:768px){
-        .hero h1{font-size:40px}
-        .card{padding:30px}
+          .hero{
+            background-position:50% 20%;
+          }
         }
         .ornamen-top,
         .ornamen-bottom{
@@ -551,27 +547,6 @@
           }
         }
 
-        .lock{
-          position:fixed;
-          inset:0;
-          background:#111;
-          display:flex;
-          flex-direction:column;
-          justify-content:center;
-          align-items:center;
-          z-index:9999;
-          transition:1.2s;
-        }
-
-        .lock.hide{
-          opacity:0;
-          visibility:hidden;
-        }
-
-        body{
-          overflow:hidden;
-        }
-
         .countdown div{
           font-variant-numeric:tabular-nums;
         }
@@ -622,6 +597,115 @@
           transform:scale(1.1);
         }
 
+        /* ===== ENVELOPE PREMIUM ===== */
+        .envelope-wrap{
+          position:relative;
+          width:260px;
+          height:200px;
+          cursor:pointer;
+          perspective:1000px;
+        }
+
+
+        .envelope-wrap:hover{
+          transform:translateY(-8px) scale(1.03);
+          box-shadow:0 20px 90px rgba(212,175,55,.25);
+        }
+
+        .envelope{
+          position:absolute;
+          inset:0;
+          background:#e9e6df;
+          border-radius:14px;
+          z-index:2;
+          box-shadow:0 20px 40px rgba(0,0,0,.35);
+          overflow:hidden;
+        }
+
+        /* tutup amplop */
+        .flap{
+          position:absolute;
+          inset:0;
+          background:linear-gradient(145deg,#ffffff,#eaeaea);
+          clip-path:polygon(0 0,100% 0,50% 55%);
+          transform-origin:top;
+          transition:transform 1.2s cubic-bezier(.77,0,.18,1);
+          z-index:5;
+          backface-visibility:hidden;
+        }
+
+        .letter{
+          position:absolute;
+          left:18px;
+          right:18px;
+          bottom:14px;
+          height:150px;
+          background:linear-gradient(#f8f5ef,#efe8db);
+          border-radius:12px;
+
+          display:flex;
+          flex-direction:column;
+          align-items:center;
+          justify-content:center;
+          gap:6px;
+
+          transform:translateY(55px);
+          transition:transform 1.15s cubic-bezier(.77,0,.18,1);
+          z-index:3;
+        }
+
+        .letter h3{
+          margin:0;
+          font-size:26px;
+          color:#d4af37;
+        }
+
+        .letter p{
+          margin:0;
+          font-size:14px;
+          opacity:.6;
+        }
+
+        .letter::after{
+          content:"";
+          position:absolute;
+          inset:-35px;
+          background:radial-gradient(circle,rgba(255,215,120,.65),transparent 70%);
+          opacity:0;
+          transition:opacity 1.4s ease;
+          z-index:-1;
+        }
+
+        /* saat dibuka */
+        .open .flap{
+          transform:rotateX(-170deg);
+        }
+
+        .open .letter{
+          transform:translateY(-70px);
+        }
+
+        .open .letter::after{
+          opacity:1;
+        }
+
+        /* glow emas */
+        .envelope::after{
+          content:"";
+          position:absolute;
+          inset:-6px;
+          border-radius:14px;
+          background:linear-gradient(45deg,#d4af37,transparent,#f6e27a);
+          opacity:0;
+          filter:blur(16px);
+          transition:.8s;
+        }
+
+        .open .envelope::after{
+          opacity:.9;
+        }
+
+
 </style>
 </head>
 
@@ -631,15 +715,26 @@
     <div class="ornamen-bottom"></div>
 
         <audio id="bgMusic" loop preload="auto" playsinline>
-          <source src="audio1.mp3" type="audio/mpeg">
+          <source src="assets/audio/audio1.mp3" type="audio/mpeg">
         </audio>
 
 
 <!-- LOCK SCREEN -->
 <div class="lock" id="lock">
-  <div class="envelope" id="openEnv"></div>
+  <div class="envelope-wrap" id="openEnv">
+
+    <div class="envelope">
+      <div class="flap"></div>
+      <div class="letter">
+        <h3>Undangan</h3>
+        <p>Klik untuk membuka</p>
+      </div>
+    </div>
+
+  </div>
   <p class="gold">Klik untuk membuka undangan</p>
 </div>
+
 
 <!-- HERO -->
 <section class="hero">
@@ -816,69 +911,42 @@
 </footer>
 
 <button id="toggleMusic" class="music-btn">🔊</button>
+
 <script>
-  // ambil nama tamu dari URL
-  const params=new URLSearchParams(window.location.search);
-  const guest=params.get('to');
+    // ambil nama tamu dari URL
+    const params=new URLSearchParams(window.location.search);
+    const guest=params.get('to');
 
-  if(guest){
-    document.getElementById('guestName').innerText="Kepada Yth. "+guest;
-    document.getElementById('namaTamu').value=guest;
-  }
+    if(guest){
+      document.getElementById('guestName').innerText="Kepada Yth. "+guest;
+      document.getElementById('namaTamu').value=guest;
+    }
 
-  // buka amplop + musik
-  const lock=document.getElementById('lock');
-  const env=document.getElementById('openEnv');
+    // countdown
+    const target=new Date('March 23, 2026 13:00:00').getTime();
 
-  env.onclick = () => {
-    env.classList.add('open');
+    setInterval(()=>{
+      const now=new Date().getTime();
+      const d=target-now;
+      if(d<0)return;
 
-    setTimeout(() => {
-      lock.classList.add('hide'); // pakai animasi css
-      document.body.style.overflow = 'auto';
-      startPetals();
+      const day=Math.floor(d/(1000*60*60*24));
+      const hr=Math.floor((d%(1000*60*60*24))/(1000*60*60));
+      const min=Math.floor((d%(1000*60*60))/(1000*60));
+      const sec=Math.floor((d%(1000*60))/1000);
 
-      const music = document.getElementById('music');
-      music.volume = 0;
-      music.play().catch(()=>{});
+      document.getElementById('countdown').innerHTML=
+      `<div>${day}<br>Hari</div>
+      <div>${hr}<br>Jam</div>
+      <div>${min}<br>Menit</div>
+      <div>${sec}<br>Detik</div>`;
+    },1000);
 
-      // fade in music
-      let v = 0;
-      const fade = setInterval(()=>{
-        v += 0.05;
-        music.volume = v;
-        if(v >= 0.6) clearInterval(fade);
-      },120);
-
-    }, 900);
-  };
-
-
-  // countdown
-  const target=new Date('March 23, 2026 13:00:00').getTime();
-
-  setInterval(()=>{
-    const now=new Date().getTime();
-    const d=target-now;
-    if(d<0)return;
-
-    const day=Math.floor(d/(1000*60*60*24));
-    const hr=Math.floor((d%(1000*60*60*24))/(1000*60*60));
-    const min=Math.floor((d%(1000*60*60))/(1000*60));
-    const sec=Math.floor((d%(1000*60))/1000);
-
-    document.getElementById('countdown').innerHTML=
-    `<div>${day}<br>Hari</div>
-    <div>${hr}<br>Jam</div>
-    <div>${min}<br>Menit</div>
-    <div>${sec}<br>Detik</div>`;
-  },1000);
-
-  // copy rekening
-  function copyRek(){
-    navigator.clipboard.writeText("1234567890");
-    alert("Nomor rekening disalin");
-  }
+    // copy rekening
+    function copyRek(){
+      navigator.clipboard.writeText("1234567890");
+      alert("Nomor rekening disalin");
+    }
 </script>
 
 <script>
@@ -913,22 +981,23 @@
 </script>
 
 <script>
-  function createFlower(){
-    const flower = document.createElement("div");
-    flower.innerHTML = "🌸";
-    flower.style.position="fixed";
-    flower.style.top="-20px";
-    flower.style.left=Math.random()*100+"vw";
-    flower.style.fontSize=(Math.random()*15+10)+"px";
-    flower.style.opacity=Math.random();
-    flower.style.animation="fall linear forwards";
-    flower.style.animationDuration=(Math.random()*5+5)+"s";
-    document.body.appendChild(flower);
+    function createFlower(){
+      const flower = document.createElement("div");
+      flower.innerHTML = "🌸";
+      flower.style.position="fixed";
+      flower.style.top="-20px";
+      flower.style.left=Math.random()*100+"vw";
+      flower.style.fontSize=(Math.random()*15+10)+"px";
+      flower.style.opacity=Math.random();
+      flower.style.animation="fall linear forwards";
+      flower.style.animationDuration=(Math.random()*5+5)+"s";
+      document.body.appendChild(flower);
 
-    setTimeout(()=>flower.remove(),10000);
-  }
-  setInterval(createFlower,800);
+      setTimeout(()=>flower.remove(),10000);
+    }
+    setInterval(createFlower,800);
 </script>
+
 <script>
   const reveals = document.querySelectorAll('.reveal');
 
@@ -941,8 +1010,9 @@
     },{threshold:0.2});
 
     reveals.forEach(el=>observer.observe(el));
-      </script>
-      <script>
+</script>
+
+<script>
         function startPetals(){
       setInterval(createPetal, 450);
     }
@@ -965,6 +1035,7 @@
       setTimeout(()=>petal.remove(),12000);
     }
 </script>
+
 <script>
   const light=document.getElementById("goldLight");
 
@@ -986,32 +1057,37 @@
 </script>
 
 <script>
-const music = document.getElementById("bgMusic");
-const openEnv = document.getElementById("openEnv");
+    const wrap = document.getElementById("openEnv");
+    const envelope = wrap.querySelector(".envelope");
+    const lock = document.getElementById("lock");
+    const music = document.getElementById("bgMusic");
 
-openEnv.addEventListener("click", () => {
-    document.getElementById("lock").style.display = "none";
+    wrap.addEventListener("click", () => {
 
-    music.volume = 0; // mulai dari 0 (silent)
+      // buka amplop (TARGET YANG BENAR)
+      envelope.classList.add("open");
 
-    music.play().then(() => {
+      // animasi keluar cover
+      setTimeout(() => {
+        lock.classList.add("hide");
+        document.body.style.overflow="auto";
+        startPetals();
+      }, 1100);
 
-        // naik pelan pelan
-        let vol = 0;
-        const fade = setInterval(() => {
-            vol += 0.03; // kecepatan naik (ubah disini)
-            if (vol >= 0.5) { // max volume (0.0 - 1.0)
-                vol = 0.5;
-                clearInterval(fade);
-            }
-            music.volume = vol;
-        }, 120);
+      // play music fade in
+      music.volume = 0;
+      music.play().catch(()=>{});
 
-    }).catch(() => {
-        console.log("Autoplay dicegah browser");
+      let v=0;
+      const fade=setInterval(()=>{
+        v+=0.04;
+        music.volume=v;
+        if(v>=0.5) clearInterval(fade);
+      },120);
+
     });
-});
 </script>
+
 <script>
   const btnMusic = document.getElementById("toggleMusic");
 
@@ -1025,6 +1101,7 @@ openEnv.addEventListener("click", () => {
       }
   });
 </script>
+
+
 </body>
 </html>
-
