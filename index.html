@@ -720,6 +720,58 @@
           opacity:.9;
         }
 
+        /* ===== MOBILE HERO FIX FINAL ===== */
+        @media(max-width:768px){
+
+          .hero{
+            align-items:flex-end;      /* konten turun ke bawah */
+            justify-content:flex-end;
+            padding:0 20px 140px;
+            text-align:center;
+        
+            background-size:cover;
+            background-position:center 65%; /* fokus ke gerbang */
+          }
+        
+          .hero .section{
+            background:linear-gradient(
+              to top,
+              rgba(5,5,5,.85) 0%,
+              rgba(5,5,5,.65) 40%,
+              rgba(5,5,5,0) 100%
+            );
+            padding:35px 20px;
+            border-radius:20px;
+            backdrop-filter:blur(6px);
+          }
+        
+          .hero h1{
+            font-size:32px;
+            line-height:1.25;
+            margin:8px 0;
+          }
+        
+          .hero p{
+            font-size:13px;
+            letter-spacing:2px;
+          }
+        
+          .hero .bali{
+            font-size:24px;
+          }
+        
+          #guestName{
+            margin-top:10px;
+            font-size:13px;
+            opacity:.85;
+          }
+        
+          .btn{
+            margin-top:18px;
+            padding:10px 24px;
+            font-size:14px;
+          }
+        }
 
 </style>
 </head>
@@ -1120,6 +1172,7 @@
 
 </body>
 </html>
+
 
 
 
